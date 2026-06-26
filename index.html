@@ -28,11 +28,8 @@ body { background-color: var(--bg-color); color: var(--text-main); display: flex
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 .input-wrapper { position: relative; display: flex; align-items: center; }
-.input-wrapper span.prefix { position: absolute; left: 15px; color: var(--text-muted); font-size: 15px; pointer-events: none; }
 .input-wrapper select, .input-wrapper input { width: 100%; background-color: var(--input-bg); border: 1px solid var(--border-color); color: #ffffff; padding: 12px 15px; border-radius: 6px; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
 .input-wrapper select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23787b86' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 15px center; background-size: 16px; padding-right: 40px; }
-.input-wrapper input[data-has-prefix="true"] { padding-left: 32px; }
-.input-wrapper select:focus, .input-wrapper input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.2); }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 .result-container { background: linear-gradient(135deg, rgba(41, 98, 255, 0.08) 0%, rgba(41, 98, 255, 0.02) 100%); border: 1px dashed rgba(41, 98, 255, 0.3); border-radius: 8px; padding: 20px; margin-top: 25px; text-align: center; }
 .result-label { font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 5px; }
@@ -41,7 +38,6 @@ body { background-color: var(--bg-color); color: var(--text-main); display: flex
 .result-details span strong { color: #ffffff; }
 .btn-copy { background-color: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; width: 100%; margin-top: 15px; transition: all 0.2s; font-weight: 500; }
 .btn-copy:hover { background-color: var(--border-color); color: #ffffff; }
-.btn-copy:active { transform: scale(0.98); }
 .footer-note { text-align: center; font-size: 11px; color: rgba(242, 54, 69, 0.7); margin-top: 15px; }
 </style>
 </head>
@@ -50,15 +46,15 @@ body { background-color: var(--bg-color); color: var(--text-main); display: flex
 <div class="calculator-card">
 <div class="header">
 <h1>Position Sizer</h1>
-<p>Calculateur de Lots Pro (Compte 1)</p>
+<p>Calculateur Haute Précision</p>
 </div>
 
 <div class="form-group">
 <label for="asset">Actif</label>
 <div class="input-wrapper">
 <select id="asset">
-<option value="XAUUSD">XAUUSD (Or)</option>
-<option value="NAS100" selected>NAS100 (Nasdaq)</option>
+<option value="XAUUSD" selected>XAUUSD (Or)</option>
+<option value="NAS100">NAS100 (Nasdaq)</option>
 <option value="GER40">GER40 (Dax)</option>
 <option value="US30">US30 (Dow Jones)</option>
 <option value="SP500">SP500 (S&P500)</option>
@@ -67,10 +63,9 @@ body { background-color: var(--bg-color); color: var(--text-main); display: flex
 </div>
 
 <div class="form-group">
-<label for="balance">Capital du Compte</label>
+<label for="balance">Capital du Compte ($)</label>
 <div class="input-wrapper">
-<span class="prefix">$</span>
-<input type="number" id="balance" value="10000" step="any" data-has-prefix="true">
+<input type="number" id="balance" value="4000" step="any">
 </div>
 </div>
 
@@ -78,25 +73,25 @@ body { background-color: var(--bg-color); color: var(--text-main); display: flex
 <div class="form-group">
 <label for="risk-percent">Risque (%)</label>
 <div class="input-wrapper">
-<input type="number" id="risk-percent" value="1" step="0.1" min="0.1" max="100">
+<input type="number" id="risk-percent" value="1" step="0.1">
 </div>
 </div>
 
 <div class="form-group">
 <label id="sl-label" for="stop-loss">Stop Loss (Points)</label>
 <div class="input-wrapper">
-<input type="number" id="stop-loss" value="50" step="any">
+<input type="number" id="stop-loss" value="27" step="any">
 </div>
 </div>
 </div>
 
 <div class="result-container">
 <div class="result-label">Taille du Lot Recommandée</div>
-<div class="result-value" id="lot-output">0.20</div>
+<div class="result-value" id="lot-output">0.0148</div>
 
 <div class="result-details">
-<span>Risque : <strong id="risk-cash-output">$100.00</strong></span>
-<span>Valeur/Point : <strong id="point-value-output">$0.10</strong></span>
+<span>Risque : <strong id="risk-cash-output">$40.00</strong></span>
+<span>Valeur/Point : <strong id="point-value-output">$1.48</strong></span>
 </div>
 
 <button class="btn-copy" id="btn-copy">Copier le lot</button>
@@ -120,7 +115,7 @@ const pointValueOutput = document.getElementById('point-value-output');
 const btnCopy = document.getElementById('btn-copy');
 
 const assetSpecs = {
-XAUUSD: { pointValuePerLot: 100, label: "Stop Loss (Pips/Points)" },
+XAUUSD: { pointValuePerLot: 100, label: "Stop Loss (Points)" },
 NAS100: { pointValuePerLot: 1, label: "Stop Loss (Points)" },
 GER40: { pointValuePerLot: 1, label: "Stop Loss (Points)" },
 US30: { pointValuePerLot: 1, label: "Stop Loss (Points)" },
@@ -136,19 +131,29 @@ const stopLoss = parseFloat(stopLossInput.value) || 0;
 slLabel.innerText = assetSpecs[asset].label;
 
 if (balance <= 0 || riskPercent <= 0 || stopLoss <= 0) {
-lotOutput.innerText = "0.00"; riskCashOutput.innerText = "$0.00"; pointValueOutput.innerText = "$0.00"; return;
+lotOutput.innerText = "0.0000";
+riskCashOutput.innerText = "$0.00";
+pointValueOutput.innerText = "$0.00";
+return;
 }
 
 const riskCash = balance * (riskPercent / 100);
 const pointValuePerLot = assetSpecs[asset].pointValuePerLot;
-let calculatedLot = riskCash / (stopLoss * pointValuePerLot);
-calculatedLot = Math.round(calculatedLot * 100) / 100;
 
-if (!isFinite(calculatedLot) || calculatedLot < 0) { calculatedLot = 0.00; }
+// Calcul brut
+let calculatedLot = riskCash / (stopLoss * pointValuePerLot);
+
+if (!isFinite(calculatedLot) || calculatedLot < 0) {
+calculatedLot = 0;
+}
+
+// MODIFICATION ICI : .toFixed(4) au lieu de .toFixed(2) pour voir 4 décimales (0.0148)
+lotOutput.innerText = calculatedLot.toFixed(4);
+riskCashOutput.innerText = "$" + riskCash.toFixed(2);
+
+// Valeur réelle du point pour la position finale
 const finalPointValue = calculatedLot * pointValuePerLot;
 
-lotOutput.innerText = calculatedLot.toFixed(2);
-riskCashOutput.innerText = "$" + riskCash.toFixed(2);
 pointValueOutput.innerText = "$" + finalPointValue.toFixed(2);
 }
 
